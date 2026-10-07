@@ -1,0 +1,90 @@
+module Seifert.Types
+
+import Data.Vect
+
+-- Semantic sketch only; this is not currently executed by the Idriç backend.
+-- The host-tested C ABI in native/seifert.h implements the first slice.
+
+public export
+Number : Type
+Number = Double
+
+public export
+record Vec2 where
+  constructor XY
+  x : Number
+  y : Number
+
+public export
+record Vec3 where
+  constructor XYZ
+  x : Number
+  y : Number
+  z : Number
+
+public export
+data BlockId = LeftBlock | MiddleBlock | RightBlock
+
+public export
+record Block where
+  constructor RigidBlock
+  center : Vec2
+  halfExtent : Number
+  unwrappedAngle : Number
+
+public export
+record Ribbon where
+  constructor BetweenBlocks
+  from : BlockId
+  to : BlockId
+  halfWidth : Number
+
+public export
+record ThreeBlockScene where
+  constructor Scene
+  left : Block
+  middle : Block
+  right : Block
+  leftRibbon : Ribbon
+  rightRibbon : Ribbon
+
+-- Invariants for the first experiment, checked at the executable C boundary:
+-- x and y are positive; all centers lie on one horizontal line;
+-- xLeft < xMiddle < xRight; cubes are disjoint; z=0 at every center.
+-- Rotations are about the x-axis through each block center.
+-- Ribbon endpoints coincide with the rotated cube face coordinates.
+
+public export
+data TwistCommand = Turn BlockId Number | ResetBlock BlockId
+
+public export
+stepScene : ThreeBlockScene -> TwistCommand -> ThreeBlockScene
+
+public export
+record RibbonVertex where
+  constructor RibbonPoint
+  position : Vec3
+  u : Number
+  side : Nat
+
+public export
+record RibbonMesh where
+  constructor Mesh
+  vertices : List RibbonVertex
+  triangles : List (Nat, Nat, Nat)
+
+public export
+sampleRibbons : ThreeBlockScene -> Nat -> RibbonMesh
+
+-- Input capture and camera do not enter the semantic C ABI.
+public export
+data GrabTarget = NoGrab | BlockGrab BlockId
+
+public export
+record PointerInteraction where
+  constructor Gesture
+  grab : GrabTarget
+  previousX : Number
+
+-- Deliberately NOT a Seifert-surface proof. We have two rectangular bands
+-- attached to boxes, not a checked orientable spanning surface for a link.
