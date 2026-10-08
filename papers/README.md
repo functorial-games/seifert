@@ -29,7 +29,7 @@ checked-in copies.
 4. **Étienne Ghys**, “Knots and Dynamics,” in *Proceedings of the
    International Congress of Mathematicians, Madrid 2006*, vol. I
    (published 2007), 247–277.
-   [Publisher / DOI](https://doi.org/10.4171/022-1/10).
+   [Publisher / DOI](https://doi.org/10.4171/022-1/11).
    Knotted periodic orbits, linking, and the arithmetic of modular
    geodesic flow. An adjacent research survey, **not** a standalone
    arithmetic-topology book.
@@ -44,3 +44,20 @@ checked-in copies.
   symbols and Alexander/Iwasawa modules.
 
 No paper here is claimed to be implemented in Idriç yet.
+
+
+## Further references for measured twist and linking
+
+5. **John Milnor**, “Link Groups,” *Annals of Mathematics* **59**
+   (1954), no. 2, 177–195.
+   [DOI](https://doi.org/10.2307/1969685).
+   Link-homotopy and link groups, relevant to later Milnor invariants.
+
+6. **M. R. Dennis and J. H. Hannay**, “Geometry of Călugăreanu's
+   theorem,” *Proceedings of the Royal Society A* **461** (2005).
+   [Author version (arXiv)](https://arxiv.org/abs/math-ph/0503012).
+   In the closed-framed-ribbon setting, the relationship
+   **linking number = geometric twist + writhe**. The present two
+   open ribbons do not meet the closure assumptions.
+
+Bibliography file: [papers.bib](papers.bib).
