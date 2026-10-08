@@ -1,0 +1,3 @@
+build_id	target	toolchain	ick_revision	ick_status	ick_evidence
+miro-a1	armeabi-v7a	ndk	c5d28dde9cc333a562b907785d0370b725146cdf	gap:Exact Seifert Android object generation and platform link through ICK are not qualified	doc:qualification/s1-20261008/README.md
+miro-c67	arm64-v8a	ndk	c5d28dde9cc333a562b907785d0370b725146cdf	gap:Exact Seifert Android object generation and platform link through ICK are not qualified	doc:qualification/s1-20261008/README.md
