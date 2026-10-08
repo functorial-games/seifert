@@ -80,11 +80,22 @@ strict_compile=(
     -Wpedantic
 )
 
+# The first-party mathematical source is ICKY C, not an ordinary C file.
+# This leaf still uses the explicitly labeled NDK-compatibility lane until
+# Seifert's complete ICK ARM32/ARM64 application build is qualified.
+# The adapter only translates ← assignment to = outside comments/literals.
+command -v python3 >/dev/null || {
+    echo 'Python 3 required for explicit ICKY C compatibility adapter' >&2
+    exit 2
+}
+python3 "$root/tools/normalize_icky_c.py" \
+    "$root/icky/seifert.c" "$work/seifert.c"
+
 sources=(
     "$root/android/seifert_android.c"
     "$root/android/seifert_renderer.c"
     "$root/android/seifert_view.c"
-    "$root/native/seifert.c"
+    "$work/seifert.c"
 )
 
 objects=()
