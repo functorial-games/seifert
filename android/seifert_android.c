@@ -15,12 +15,11 @@
 #include <string.h>
 
 #include "seifert_renderer.h"
+#include "seifert_view.h"
 
 #define SEIFERT_LOG_TAG "SeifertNative"
 #define SEIFERT_LOG(...) __android_log_print(ANDROID_LOG_INFO, SEIFERT_LOG_TAG, __VA_ARGS__)
 #define SEIFERT_LOGE(...) __android_log_print(ANDROID_LOG_ERROR, SEIFERT_LOG_TAG, __VA_ARGS__)
-
-#define SEIFERT_TAU_F 6.28318530717958647692f
 
 typedef struct {
     float angles[SEIFERT_BLOCK_COUNT];
@@ -39,15 +38,12 @@ typedef struct {
     bool redraw;
     bool focused;
 
-    int32_t active_pointer_id;
-    int active_block;
-    float previous_x;
+    SeifertGrab grab;
 } SeifertAndroidState;
 
 static void release_grab(SeifertAndroidState *state)
 {
-    state->active_pointer_id = -1;
-    state->active_block = -1;
+    seifert_grab_reset(&state->grab);
 }
 
 static int short_side(const SeifertAndroidState *state)
@@ -336,7 +332,7 @@ static int32_t handle_input(
 
     if (masked == AMOTION_EVENT_ACTION_DOWN ||
         masked == AMOTION_EVENT_ACTION_POINTER_DOWN) {
-        if (state->active_pointer_id >= 0) {
+        if (state->grab.active_pointer_id >= 0) {
             return 1;
         }
 
@@ -352,45 +348,37 @@ static int32_t handle_input(
             AMotionEvent_getY(event, (size_t)pointer_index);
 
         const int block = seifert_renderer_pick_block(x, y);
-        if (block < 0) {
+        const int32_t pointer_id = AMotionEvent_getPointerId(
+            event, (size_t)pointer_index
+        );
+        if (!seifert_grab_begin(&state->grab, block, pointer_id, x)) {
             return 0;
         }
-
-        state->active_block = block;
-        state->active_pointer_id =
-            AMotionEvent_getPointerId(
-                event,
-                (size_t)pointer_index
-            );
-        state->previous_x = x;
         return 1;
     }
 
     if (masked == AMOTION_EVENT_ACTION_MOVE &&
-        state->active_pointer_id >= 0) {
-        const int index =
-            pointer_index_for_id(
-                event,
-                state->active_pointer_id
-            );
+        state->grab.active_pointer_id >= 0) {
+        const int index = pointer_index_for_id(
+            event, state->grab.active_pointer_id
+        );
         if (index < 0) {
             release_grab(state);
             return 1;
         }
 
-        const float x =
-            AMotionEvent_getX(event, (size_t)index);
-        const float delta_x = x - state->previous_x;
-        state->previous_x = x;
-
-        const float delta_angle =
-            SEIFERT_TAU_F *
-            delta_x /
-            (float)short_side(state);
-
-        if (fabsf(delta_angle) > 0.0f &&
+        const float x = AMotionEvent_getX(event, (size_t)index);
+        float delta_angle = 0.0f;
+        if (seifert_grab_move(
+                &state->grab,
+                state->grab.active_pointer_id,
+                x,
+                short_side(state),
+                &delta_angle
+            ) &&
+            fabsf(delta_angle) > 0.0f &&
             seifert_renderer_turn_block(
-                (unsigned)state->active_block, delta_angle
+                (unsigned)state->grab.active_block, delta_angle
             )) {
             state->redraw = true;
         }
@@ -400,7 +388,7 @@ static int32_t handle_input(
 
     if ((masked == AMOTION_EVENT_ACTION_UP ||
          masked == AMOTION_EVENT_ACTION_POINTER_UP) &&
-        state->active_pointer_id >= 0) {
+        state->grab.active_pointer_id >= 0) {
         const size_t count = AMotionEvent_getPointerCount(event);
         if (pointer_index >= 0 &&
             (size_t)pointer_index < count) {
@@ -409,9 +397,7 @@ static int32_t handle_input(
                     event,
                     (size_t)pointer_index
                 );
-            if (released_id == state->active_pointer_id) {
-                release_grab(state);
-            }
+            (void)seifert_grab_end(&state->grab, released_id);
         }
         return 1;
     }
@@ -430,8 +416,7 @@ void android_main(struct android_app *app)
     state.display = EGL_NO_DISPLAY;
     state.surface = EGL_NO_SURFACE;
     state.context = EGL_NO_CONTEXT;
-    state.active_pointer_id = -1;
-    state.active_block = -1;
+    seifert_grab_reset(&state.grab);
     state.focused = true;
 
     app->userData = &state;
