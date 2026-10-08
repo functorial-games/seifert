@@ -97,3 +97,8 @@ A full endpoint revolution can change the visible ribbon while returning
 the cube's rendered orientation. The unwrapped angle history must remain
 available to future Idriç functions. A missing invariant must be reported
 as *unavailable*, never as a spurious zero.
+
+
+## Cross-reading for arithmetic workloads
+
+[Arithmetic topology, polynomial invariants, and multiplication benchmarks](arithmetic-examples-for-multiplication.md) gives possible future operand families and backlinks to the ComputerScience and Fulton books shelves. It is a research map, not a benchmark result.
