@@ -2,8 +2,8 @@ module Seifert.Types
 
 import Data.Vect
 
--- Semantic sketch only; this is not currently executed by the Idriç backend.
--- The host-tested C ABI in native/seifert.h implements the first slice.
+-- Design sketch only, not compiled by current Idriç toolchain.
+-- Executable checks and geometry are in native/seifert.[ch].
 
 public export
 Number : Type
@@ -23,7 +23,7 @@ record Vec3 where
   z : Number
 
 public export
-data BlockId = LeftBlock | MiddleBlock | RightBlock
+data BlockId = UpperBlock | CornerBlock | RightBlock
 
 public export
 record Block where
@@ -42,17 +42,16 @@ record Ribbon where
 public export
 record ThreeBlockScene where
   constructor Scene
-  left : Block
-  middle : Block
+  upper : Block
+  corner : Block
   right : Block
-  leftRibbon : Ribbon
-  rightRibbon : Ribbon
+  verticalRibbon : Ribbon
+  horizontalRibbon : Ribbon
 
--- Invariants for the first experiment, checked at the executable C boundary:
--- x and y are positive; all centers lie on one horizontal line;
--- xLeft < xMiddle < xRight; cubes are disjoint; z=0 at every center.
--- Rotations are about the x-axis through each block center.
--- Ribbon endpoints coincide with the rotated cube face coordinates.
+-- Positive orthant: corner.x = upper.x, corner.y = right.y,
+-- corner.y < upper.y and corner.x < right.x, cubes disjoint.
+-- Each angle acts through its cube center about the fixed unit
+-- spatial diagonal (1,1,1)/sqrt(3), not about two incompatible axes.
 
 public export
 data TwistCommand = Turn BlockId Number | ResetBlock BlockId
@@ -76,7 +75,8 @@ record RibbonMesh where
 public export
 sampleRibbons : ThreeBlockScene -> Nat -> RibbonMesh
 
--- Input capture and camera do not enter the semantic C ABI.
+-- Pointer capture is owned by the Android adapter and depends on
+-- a single stable selected block and pointer id until release.
 public export
 data GrabTarget = NoGrab | BlockGrab BlockId
 
@@ -86,5 +86,6 @@ record PointerInteraction where
   grab : GrabTarget
   previousX : Number
 
--- Deliberately NOT a Seifert-surface proof. We have two rectangular bands
--- attached to boxes, not a checked orientable spanning surface for a link.
+-- Not a Seifert-surface proof. These are two ruled, deformable bands
+-- attached to rotating cubical bodies, not an orientable spanning
+-- surface with a verified boundary link.
