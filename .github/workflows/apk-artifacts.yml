@@ -6,6 +6,8 @@ on:
     paths:
       - "android/**"
       - "native/**"
+      - "icky/**"
+      - "tools/**"
       - ".github/workflows/apk-artifacts.yml"
   pull_request:
     branches: [main]
