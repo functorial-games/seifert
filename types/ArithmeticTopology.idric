@@ -6,7 +6,7 @@ import Seifert.Types
 -- This first slice *defines* pure arithmetic/readout operations over the
 -- existing ThreeBlockScene. The renderer and geometry solver remain separate.
 --
--- Bibliography: books/README.md, books/books.bib, books/papers.bib
+-- Bibliography: books/README.md, books/books.bib, papers/papers.bib
 -- Current open ribbons do NOT admit a closed-link linking invariant.
 
 public export
