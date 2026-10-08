@@ -1,4 +1,4 @@
-#include "../native/seifert.h"
+#include "seifert.h"
 
 #include <math.h>
 #include <stddef.h>
