@@ -83,6 +83,7 @@ strict_compile=(
 sources=(
     "$root/android/seifert_android.c"
     "$root/android/seifert_renderer.c"
+    "$root/android/seifert_view.c"
     "$root/native/seifert.c"
 )
 
