@@ -128,21 +128,16 @@ void seifert_grab_reset(SeifertGrab *grab)
     grab->previous_x = 0.0f;
 }
 
-int seifert_grab_begin(SeifertGrab *grab, const SeifertScene *scene,
-                       int width, int height, int32_t pointer_id,
-                       float pixel_x, float pixel_y)
+int seifert_grab_begin(SeifertGrab *grab, int block_index,
+                       int32_t pointer_id, float pixel_x)
 {
     if (grab == NULL || grab->active_pointer_id >= 0 ||
+        block_index < 0 || block_index >= (int)SEIFERT_BLOCK_COUNT ||
         pointer_id < 0 || !isfinite(pixel_x)) {
         return 0;
     }
-    const int block =
-        seifert_view_pick(scene, width, height, pixel_x, pixel_y);
-    if (block < 0) {
-        return 0;
-    }
     grab->active_pointer_id = pointer_id;
-    grab->active_block = block;
+    grab->active_block = block_index;
     grab->previous_x = pixel_x;
     return 1;
 }
