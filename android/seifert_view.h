@@ -32,9 +32,8 @@ typedef struct {
 } SeifertGrab;
 
 void seifert_grab_reset(SeifertGrab *grab);
-int seifert_grab_begin(SeifertGrab *grab, const SeifertScene *scene,
-                       int width, int height, int32_t pointer_id,
-                       float pixel_x, float pixel_y);
+int seifert_grab_begin(SeifertGrab *grab, int block_index,
+                       int32_t pointer_id, float pixel_x);
 int seifert_grab_move(SeifertGrab *grab, int32_t pointer_id,
                       float pixel_x, int short_side, float *delta_angle);
 int seifert_grab_end(SeifertGrab *grab, int32_t pointer_id);
