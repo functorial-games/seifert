@@ -10,7 +10,7 @@ on:
       - "tools/**"
       - ".github/workflows/apk-artifacts.yml"
   pull_request:
-    branches: [main]
+    branches: [main, feat/three-block-ribbons]
     paths:
       - "android/**"
       - "native/**"
