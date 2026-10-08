@@ -1,67 +1,66 @@
-# Android three-block playground
+# Android orthant playground
 
-The first implementation inherits the app architecture of
-[functorial-games/spinor](https://github.com/functorial-games/spinor):
+The three cubes form an **L**, with one at the corner and outer cubes
+above and to the right. The corner cube is attached to both ribbons.
+Touch any block and drag horizontally to rotate it about its spatial
+diagonal, then reverse direction to undo. Release keeps the pose.
+
+The invisible grab disk for each cube now has a 19%-of-short-screen-side
+radius (previously 14%), with a minimum 48 px radius. Nearest-center
+selection resolves any overlap. Crucially, the exact same 4×4 projection
+matrix is used to draw the blocks and locate their touch centers.
+
+**Sticky capture:** selection happens once, at pointer-down. The original
+finger retains its block through all subsequent moves, including over the
+other blocks and outside the original grab disk, until that finger lifts,
+is canceled, or the Activity is paused/resized. Other fingers do not
+steal an existing grab. Multi-touch does not change the selected block.
+
+This is still the architecture inherited from Spinor:
 
 ```text
-types/Seifert.idric         semantic/type sketch (not executable yet)
-       |
-native/seifert.[ch]        host-tested C geometry and independent angles
-       |
-android/seifert_android.c NativeActivity, pointer IDs, lifecycle, saved state
-       |
-android/seifert_renderer.c GLES2 drawing and projected picking only
-       |
-android-NDK packager       canonical signed NativeActivity APK
+types/Seifert.idric       design-only semantic sketch
+native/seifert.[ch]       host-tested C geometry and per-block angles
+android/seifert_view.c   camera / touch targets / grab capture
+android/seifert_android.c  NativeActivity input, EGL and saved state
+android/seifert_renderer.c GLES2 drawing
+android-NDK packager     canonical signed APK
 ```
 
-Three colored cubes are arranged along a line in the positive x-y quadrant.
-A wide orange band joins the left cube to the middle cube. A blue band joins
-the middle cube to the right. The *ribbon direction* is the x-axis; twisting
-rotates an individual cube about that axis.
+No DEX, Java or Kotlin. The renderer does not invent ribbon geometry.
+The three unwrapped angles survive Activity state restoration and
+ordinary surface re-creation.
 
-**Control:** touch one cube and drag horizontally. One short-screen-width drag
-produces a 2π turn. Release leaves the three angles unchanged. Grab another
-cube to turn it without resetting the first; reverse dragging unwinds it.
-The middle cube changes both ribbons because each has an endpoint there.
-Touching the background does not alter any angle. Camera is fixed.
+## Build
 
-The Android app uses no DEX, no application Java/Kotlin, EGL and OpenGL ES 2.
-It saves all three unwrapped angles across Activity state restoration and
-retains them across ordinary window/surface recreation.
+Run host acceptance:
 
-## Build and artifact policy
-
-Like Spinor, this leaf build is ABI-parameterized. Cat Food owns target
-facts; Flexible Pipes owns the paired MIRO A1/C67 orchestration.
-A1 (`armeabi-v7a`) is the priority if only one ABI can be produced.
-
-Host tests:
 ```sh
 sh native/test-host.sh
 ```
 
-Produce the native library:
+For MIRO A1, compile and package against the same canonical NDK and test
+signer as the previous working A1 APK, with a bumped versionCode 2 so it
+installs over version 1 without erasing saved app data:
+
 ```sh
 ANDROID_ABI=armeabi-v7a ANDROID_NDK_HOME=/absolute/android-ndk-r27c \
   bash android/build-native.sh
 ```
 
-Package with the canonical
-[`isomorphisms/android-NDK`](https://github.com/isomorphisms/android-NDK)
-NativeActivity packager. Set `ANDROID_NDK_CHECKOUT` and the
+Then set `ANDROID_NDK_CHECKOUT` and the
 `SEIFERT_KEYSTORE`, `SEIFERT_KEYSTORE_TYPE`, `SEIFERT_KEY_ALIAS`,
-`SEIFERT_STORE_PASSWORD`, `SEIFERT_KEY_PASSWORD` and
-`SEIFERT_EXPECTED_CERT_SHA256` signer variables, then run:
+`SEIFERT_STORE_PASSWORD`, `SEIFERT_KEY_PASSWORD`, and
+`SEIFERT_EXPECTED_CERT_SHA256` signer variables; run
+
 ```sh
 ANDROID_ABI=armeabi-v7a bash android/build.sh
 ```
 
-The GitHub Actions APK workflow follows Spinor's paired A1/C67 matrix and
-uploads signed test APKs plus signing receipts. A successful host test or
-cross-compile is **not** evidence of physical-device launch or touch success.
+CI builds and uploads both MIRO A1 (`armeabi-v7a`) and
+MIRO C67 (`arm64-v8a`) signed APKs using that packager. A1 remains
+the priority target if only one can be produced. Physical acceptance
+is separate from host and CI build success.
 
-## Deferred
-
-No camera orbit, physics cloth, knot/link invariants, Seifert-surface
-construction, field contraction, or automatic 4π untangling in this slice.
+Camera orbit, cloth physics, arbitrary attachment graphs, Seifert
+surface invariant checks and topological untangling remain deferred.
