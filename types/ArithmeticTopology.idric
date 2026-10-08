@@ -90,7 +90,7 @@ readout (CenterlineWrithe _) _ =
 readout ClosedLinkLinking _ =
   Unavailable "linking number" [DisjointClosedOrientedBoundaries]
 readout SurfaceGenus _ =
-  Unavailable "Seifert genus" [CertifiedOrientableSurface]
+  Unavailable "spanning-surface genus" [CertifiedOrientableSurface]
 readout LegendreSymbol _ =
   Unavailable "Legendre symbol" [ExplicitArithmeticInputs]
 
