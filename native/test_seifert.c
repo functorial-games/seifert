@@ -160,7 +160,8 @@ static void test_independent_twists(void)
         assert(same(vertices[i], initial[i]));
     }
     assert(seifert_sample_blocks(&scene, blocks) == SEIFERT_OK);
-    assert(different(blocks[0u], initial_blocks[0u]));
+    /* First cube corner lies on the diagonal axis; another corner must move. */
+    assert(different(blocks[1u], initial_blocks[1u]));
     for (size_t i = 36u; i < SEIFERT_BLOCK_VERTEX_COUNT; ++i) {
         assert(same(blocks[i], initial_blocks[i]));
     }
