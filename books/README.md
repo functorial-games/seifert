@@ -32,7 +32,7 @@ Idriç function definitions and mathematical UI labels.
 | ribbonTwist | dennis2005 | Regular centerline and continuous, transverse unit framing | Later: geometric measurement. |
 | writhe | dennis2005 | Regular centerline, validated quadrature and self-contact policy | Later: geometric measurement; not a knot invariant. |
 | linkingNumber | rolfsen2003, dennis2005 | **Disjoint closed oriented curves** | **No** for the current two open ribbons. |
-| seifertGenus | seifert1935genus, rolfsen2003 | Certified connected orientable surface, Euler characteristic and boundary count | Not yet. |
+| surfaceGenusFromCertifiedCounts | seifert1935genus, rolfsen2003 | Certified connected orientable surface, Euler characteristic and boundary count | Not yet; does not prove *minimal knot genus*. |
 | alexanderPolynomial | alexander1928, rolfsen2003 | Closed knot/link algebra, e.g. verified Seifert matrix | Not yet. |
 | linkingResidueAnalogy | morishita2012, morishita2024 | Explicit number-theoretic inputs and a valid analogy | Not determined by a finger drag. |
 
@@ -48,4 +48,4 @@ Seifert surface, conserved linking numbers, or non-self-intersection.
 - Publisher links may require paid or institutional access.
 - Each new Idriç definition should cite a key and state **input preconditions**.
 - If those preconditions are not yet met, a proposed invariant is *unavailable*,
-  not zero. Reserve the word *invariant* for quantities that actually are one.
+  not zero. Reserve the word *invariant* for quantities that actually are one. The genus of one constructed spanning surface need not equal the **knot genus**, which is the minimum over all such surfaces.
