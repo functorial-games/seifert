@@ -1,28 +1,52 @@
 # Seifert
 
-A small interactive experiment: three independently twistable blocks arranged
-left–middle–right in the positive `(x,y)` quadrant, with a ribbon joining
-each outer block to the middle block.
+An interactive three-block ribbon experiment in a genuine **two-dimensional
+positive orthant**, rather than three cubes laid out on one line:
 
-The first implementation follows the architecture of
+```text
+  upper
+    □
+    ║ ribbon 0
+    ║
+    □══════□
+  corner    right
+       ribbon 1
+```
+
+The corner block joins the upper and right blocks through two perpendicular
+ribbons. All three cubes rotate independently about a shared 3D spatial
+diagonal (through each cube's own center), while the ends of each ribbon
+follow the rotating faces to which they attach.
+
+Grab a cube and drag horizontally to turn it. Its hit area is larger than
+the visible cube and remains captured even as your finger moves across
+another block or well away from the starting target. Reversing the gesture
+untwists the scene; releasing keeps all three angles.
+
+This is a first interactive **ribbon-twist** model, not a Seifert-surface
+solver or a guaranteed nonsingular Dirac belt-trick contraction. A complete
+2π turn of one cube returns its visible orientation but can leave an
+interior ribbon twist.
+
+## Implementation
+
+The design follows
 [functorial-games/spinor](https://github.com/functorial-games/spinor):
-an Idriç semantic sketch, host-tested C geometry, a thin Android NativeActivity
-adapter, and a GLES2 renderer. The geometry is independently implemented.
 
-**First slice:** pick any block and drag horizontally to twist it about the
-axis of its connecting ribbon. Both ribbons are recomputed from the three
-signed, unwrapped block angles. Release holds the pose; reverse dragging
-reverses the twist.
+- `types/Seifert.idric`: Idriç semantic/type sketch, not compiled;
+- `native/seifert.[ch]`: checked host-tested independent 3D rotations and
+  connected ribbon samples;
+- `android/seifert_view.[ch]`: shared camera projection, large nearest-center
+  grab targets, and persistent pointer capture, independently host-tested;
+- `android/seifert_android.c`: NativeActivity/Android pointer lifecycle;
+- `android/seifert_renderer.c`: OpenGL ES 2 renderer;
+- `android/build-*.sh`: canonical android-NDK signing and packaging route.
 
-This is a ribbon-twist playground, **not** yet a Seifert-surface solver or a
-Dirac belt-trick contraction. In particular, a 2π endpoint turn leaves a full
-ribbon twist, instead of claiming that the entire field has returned.
+`sh native/test-host.sh` verifies the orthant, all six attachment pairs,
+independent turning, 2π/undo, camera/picking consistency, and off-block
+drag persistence. CI builds signed MIRO A1 and C67 APK artifacts.
 
-See `android/README.md` for build/interaction and `native/README.md` for
-geometry and host acceptance once those files are in place.
+Jason Hise's belt-trick/antitwister visualizations inspire the visual
+experiment. No unreleased Hise source code is included.
 
-## Lineage
-
-Jason Hise's belt-trick/antitwister visualizations are a principal visual
-inspiration, as credited and researched in the upstream Spinor repository.
-No Hise source code is included.
+See `native/README.md` and `android/README.md`.
