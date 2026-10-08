@@ -78,7 +78,8 @@ For a connected, compact, orientable surface with b boundary components:
     chi = 2 - 2*g - b
 
 The module checks arithmetic consistency but NOT orientability or mesh
-topology. Once an oriented Seifert surface, cycle basis and push-offs are
+topology. The genus of a selected spanning surface is not necessarily the
+**knot genus** (the minimum genus over all spanning surfaces). Once an oriented Seifert surface, cycle basis and push-offs are
 available, a Seifert matrix V gives an Alexander polynomial represented
 by det(V - t * transpose(V)), up to multiplication by ± t^k.
 
