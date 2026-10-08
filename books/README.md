@@ -9,6 +9,9 @@ Idriç function definitions and mathematical UI labels.
 | Citation key | Work | Use in Seifert |
 | --- | --- | --- |
 | rolfsen2003 | Dale Rolfsen, *Knots and Links* (1976; AMS Chelsea 2003 reprint) | Knot/link topology, Seifert surfaces, linking, knot groups, Alexander invariants. Best initial geometry reference. |
+| adams2004 | Colin C. Adams, *The Knot Book* (AMS, 2004) | Entry route through link diagrams, crossings and Seifert's algorithm. |
+| seifertThrelfall1980 | Herbert Seifert and William Threlfall, *A Textbook of Topology* (1934 original; 1980 English translation) | Background topology, manifolds, fundamental groups, fibered spaces. |
+| hatcher2002 | Allen Hatcher, *Algebraic Topology* (2002) | Homology, fundamental groups, covering spaces; author-hosted reading copy is legally available at the linked site. |
 | morishita2012 | Masanori Morishita, *Knots and Primes: An Introduction to Arithmetic Topology*, 1st ed. (2012) | Linking numbers vs. Legendre symbols; knot vs. Galois groups; Milnor vs. higher residue symbols. |
 | morishita2024 | Morishita, *Knots and Primes*, 2nd ed. (2024) | Updated arithmetic topology; adds class field theory and Dijkgraaf–Witten material. |
 | milnor1968 | John Milnor, *Singular Points of Complex Hypersurfaces* (1968) | Milnor fibration, links of singularities, fiber surfaces. |
