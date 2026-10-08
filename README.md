@@ -26,3 +26,16 @@ geometry and host acceptance once those files are in place.
 Jason Hise's belt-trick/antitwister visualizations are a principal visual
 inspiration, as credited and researched in the upstream Spinor repository.
 No Hise source code is included.
+
+## Mathematical reading list
+
+- [Books: arithmetic topology and supporting topology](books/README.md) —
+  Morishita's *Knots and Primes* (including its 2024 revision) and
+  Milnor's *Singular Points of Complex Hypersurfaces*.
+- [Papers: Alexander, Seifert, and Ghys](papers/README.md) —
+  original knot and covering invariants, Seifert surfaces, and
+  connections with dynamical systems.
+
+These are references for future Idriç mathematical definitions, not a
+claim that the current ribbon viewer computes those invariants. In particular,
+a geometric twist is not automatically a change of knot type.
