@@ -1,4 +1,5 @@
 #include "seifert_renderer.h"
+#include "seifert_view.h"
 
 #include <GLES2/gl2.h>
 #include <android/log.h>
@@ -21,18 +22,14 @@ typedef struct {
 } RenderVertex;
 
 static const char *VERTEX_SHADER =
-    "attribute vec3 a_position;\n"
-    "attribute vec3 a_color;\n"
-    "uniform float u_extent;\n"
-    "uniform float u_aspect;\n"
-    "varying vec3 v_color;\n"
-    "void main() {\n"
-    "  vec3 p = a_position - vec3(3.5, 1.5, 0.0);\n"
-    "  vec3 q = vec3(0.9798*p.x + 0.2*p.z, p.y, -0.2*p.x + 0.9798*p.z);\n"
-    "  vec3 v = vec3(q.x, 0.9801*q.y + 0.1987*q.z, -0.1987*q.y + 0.9801*q.z);\n"
-    "  gl_Position = vec4(v.x/u_extent, v.y*u_aspect/u_extent, 0.08*v.z, 1.0);\n"
-    "  v_color = a_color;\n"
-    "}\n";
+    "attribute vec3 a_position;\\n"
+    "attribute vec3 a_color;\\n"
+    "uniform mat4 u_matrix;\\n"
+    "varying vec3 v_color;\\n"
+    "void main() {\\n"
+    "  gl_Position = u_matrix * vec4(a_position, 1.0);\\n"
+    "  v_color = a_color;\\n"
+    "}\\n";
 
 static const char *FRAGMENT_SHADER =
     "precision mediump float;\n"
@@ -54,8 +51,7 @@ static GLuint ribbon_ebo = 0u;
 static GLuint block_vbo = 0u;
 static GLint position_location = -1;
 static GLint color_location = -1;
-static GLint extent_location = -1;
-static GLint aspect_location = -1;
+static GLint matrix_location = -1;
 
 static SeifertVec3 ribbon_positions[RIBBON_VERTICES];
 static uint16_t ribbon_indices[RIBBON_INDICES];
@@ -86,12 +82,6 @@ static int ensure_model(void)
         geometry_dirty = true;
     }
     return model_ready ? 1 : 0;
-}
-
-static float viewport_extent(void)
-{
-    const float aspect = (float)render_width / (float)render_height;
-    return fmaxf(3.25f, 1.7f * aspect);
 }
 
 static GLuint compile_shader(GLenum type, const char *source)
@@ -227,8 +217,7 @@ void seifert_renderer_stop(void)
     program = 0u;
     position_location = -1;
     color_location = -1;
-    extent_location = -1;
-    aspect_location = -1;
+    matrix_location = -1;
     gl_ready = false;
 }
 
@@ -257,10 +246,9 @@ int seifert_renderer_start(int width, int height, int gles_major)
 
     position_location = glGetAttribLocation(program, "a_position");
     color_location = glGetAttribLocation(program, "a_color");
-    extent_location = glGetUniformLocation(program, "u_extent");
-    aspect_location = glGetUniformLocation(program, "u_aspect");
+    matrix_location = glGetUniformLocation(program, "u_matrix");
     if (position_location < 0 || color_location < 0 ||
-        extent_location < 0 || aspect_location < 0) {
+        matrix_location < 0) {
         seifert_renderer_stop();
         return 0;
     }
@@ -334,31 +322,12 @@ void seifert_renderer_get_angles(float angles[SEIFERT_BLOCK_COUNT])
 
 int seifert_renderer_pick_block(float pixel_x, float pixel_y)
 {
-    if (!ensure_model() || !isfinite(pixel_x) || !isfinite(pixel_y)) {
+    if (!ensure_model()) {
         return -1;
     }
-
-    const float extent = viewport_extent();
-    const float aspect = (float)render_width / (float)render_height;
-    const float radius = 0.14f *
-        (float)(render_width < render_height ? render_width : render_height);
-    const float radius_squared = radius * radius;
-
-    for (unsigned i = 0u; i < SEIFERT_BLOCK_COUNT; ++i) {
-        const float world_x = scene.centers[i].x - scene.centers[1].x;
-        const float projected_x = 0.9798f * world_x;
-        const float projected_y = 0.1987f * (-0.2f * world_x);
-        const float center_x = 0.5f * (float)render_width *
-                               (1.0f + projected_x / extent);
-        const float center_y = 0.5f * (float)render_height *
-                               (1.0f - projected_y * aspect / extent);
-        const float dx = pixel_x - center_x;
-        const float dy = pixel_y - center_y;
-        if (dx * dx + dy * dy <= radius_squared) {
-            return (int)i;
-        }
-    }
-    return -1;
+    return seifert_view_pick(
+        &scene, render_width, render_height, pixel_x, pixel_y
+    );
 }
 
 static void bind_vertex_layout(GLuint vbo)
@@ -387,8 +356,12 @@ void seifert_renderer_draw(void)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glUseProgram(program);
-    glUniform1f(extent_location, viewport_extent());
-    glUniform1f(aspect_location, (float)render_width / (float)render_height);
+    float matrix[16];
+    if (!seifert_view_matrix(&scene, render_width, render_height, matrix)) {
+        LOGE("view matrix unavailable");
+        return;
+    }
+    glUniformMatrix4fv(matrix_location, 1, GL_FALSE, matrix);
 
     bind_vertex_layout(ribbon_vbo);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ribbon_ebo);
