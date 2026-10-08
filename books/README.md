@@ -1,54 +1,99 @@
-# Seifert mathematical reading shelf
+# Books: arithmetic topology and supporting topology
 
-Bibliographic **metadata and source links only**, not redistributed books or scans.
-The books.bib and papers.bib files provide stable citation keys for subsequent
-Idriç function definitions and mathematical UI labels.
+This is a **bibliographic reading list**, not a repository of copyrighted book files.
+Books are kept separate from [historical papers](../papers/README.md).
 
-## Books
+## Arithmetic topology
 
-| Citation key | Work | Use in Seifert |
+### Masanori Morishita — *Knots and Primes: An Introduction to Arithmetic Topology*
+
+- **Preferred edition:** 2nd ed., Springer, Universitext, 2024.
+  [Publisher / DOI](https://doi.org/10.1007/978-981-99-9255-3).
+- **Earlier edition:** 1st ed., Springer, Universitext, 2012.
+  [Publisher / DOI](https://doi.org/10.1007/978-1-4471-2158-9).
+- **Subject:** systematic comparison of knot and link topology in
+  3-manifolds with arithmetic of primes and number fields. The second
+  edition adds material on idelic class field theory and
+  Dijkgraaf–Witten theory.
+
+Reading map for eventual mathematical definitions:
+
+| Topological object or invariant | Arithmetic counterpart covered by Morishita |
+| --- | --- |
+| Knot / link in a 3-manifold | Prime ideals in a number ring |
+| Linking numbers | Legendre and higher power residue symbols |
+| Link groups | Galois groups with restricted ramification |
+| Milnor invariants | Multiple power residue symbols |
+| Alexander modules | Iwasawa modules |
+| 3-manifold homology | Ideal class groups |
+
+These are **analogies and correspondences**, not assertions that the
+objects in each row are interchangeable or numerically equal.
+
+## Supporting geometric and knot-theoretic background
+
+### John Milnor — *Singular Points of Complex Hypersurfaces*
+
+- **Edition:** Princeton University Press, *Annals of Mathematics Studies*
+  61, 1968.
+  [Publisher-linked bibliographic record](https://www.jstor.org/stable/j.ctt1bd6kvv).
+- **Subject:** topology near complex hypersurface singularities, their
+  links, Milnor fibrations, and the topology of the fibers.
+- **Role here:** a foundation for understanding knots, links, and
+  fibered surfaces arising from singularities. **Not** itself a
+  textbook on arithmetic topology.
+
+## Relation to Seifert's interactive ribbons
+
+Keep three kinds of quantity distinct when definitions are added:
+
+1. **Geometry:** an unwrapped twist angle can vary continuously under
+   dragging.
+2. **Framing/ribbon data:** twist and self-linking of a *framed* knot
+   can depend on how the ribbon is attached.
+3. **Ambient-isotopy invariants:** ordinary knot type, Alexander
+   polynomial, and related invariants do **not** change under a mere
+   deformation that preserves the knot type.
+
+A changing on-screen integer must therefore name its mathematical
+input and hypotheses; a user turning a block is not, by itself,
+evidence that an unframed knot invariant has changed.
+
+For source papers on the Alexander polynomial, Seifert surfaces,
+cyclic coverings, and knotted flows, see [papers](../papers/README.md).
+
+
+## Additional books for implementation
+
+These works fill out the geometric and algebraic prerequisites:
+
+- **Dale Rolfsen, *Knots and Links* (1976; AMS Chelsea 2003 reprint)**:
+  knot groups, Seifert surfaces, link invariants and diagrams.
+- **Colin C. Adams, *The Knot Book* (AMS, 2004)**: diagrams, crossings,
+  Reidemeister moves, and Seifert's algorithm.
+- **Herbert Seifert and William Threlfall, *A Textbook of Topology*
+  (1934 German original; 1980 English translation)**: general topology
+  and fibered 3-dimensional spaces.
+- **Allen Hatcher, *Algebraic Topology* (Cambridge, 2002)**:
+  fundamental groups, covering spaces and homology. An author-hosted
+  free electronic edition is [available under its stated terms](https://pi.math.cornell.edu/~hatcher/AT/ATpage.html).
+
+Machine-readable entries: [books.bib](books.bib). Source-paper entries:
+[papers.bib](../papers/papers.bib).
+
+## Proposed live mathematical quantities and their validity
+
+| Function | Required inputs | Current display validity |
 | --- | --- | --- |
-| rolfsen2003 | Dale Rolfsen, *Knots and Links* (1976; AMS Chelsea 2003 reprint) | Knot/link topology, Seifert surfaces, linking, knot groups, Alexander invariants. Best initial geometry reference. |
-| adams2004 | Colin C. Adams, *The Knot Book* (AMS, 2004) | Entry route through link diagrams, crossings and Seifert's algorithm. |
-| seifertThrelfall1980 | Herbert Seifert and William Threlfall, *A Textbook of Topology* (1934 original; 1980 English translation) | Background topology, manifolds, fundamental groups, fibered spaces. |
-| hatcher2002 | Allen Hatcher, *Algebraic Topology* (2002) | Homology, fundamental groups, covering spaces; author-hosted reading copy is legally available at the linked site. |
-| morishita2012 | Masanori Morishita, *Knots and Primes: An Introduction to Arithmetic Topology*, 1st ed. (2012) | Linking numbers vs. Legendre symbols; knot vs. Galois groups; Milnor vs. higher residue symbols. |
-| morishita2024 | Morishita, *Knots and Primes*, 2nd ed. (2024) | Updated arithmetic topology; adds class field theory and Dijkgraaf–Witten material. |
-| milnor1968 | John Milnor, *Singular Points of Complex Hypersurfaces* (1968) | Milnor fibration, links of singularities, fiber surfaces. |
+| relativeEndpointTurns | Unwrapped block angles: outer minus corner, divided by 2π | **Valid now as relative commanded rotations**; not geometric ribbon twist. |
+| geometricRibbonTwist | Regular centerline and continuous transverse unit framing | Not yet computable. |
+| writhe | Regular centerline and validated geometric integral | Not yet computable, and not invariant under ambient isotopy. |
+| linkingNumber | Two disjoint, oriented **closed** curves | Not valid for the present open bands. |
+| surfaceGenusFromCertifiedCounts | Connected oriented surface with certified Euler characteristic and number of boundary components | Conditional. Not automatically the *minimal knot genus*. |
+| alexanderPolynomial | Certified closed link and Seifert matrix or equivalent algebra | Not yet computable. |
+| LegendreSymbol | Explicit arithmetic inputs including an odd prime | Not a number supplied by dragging a ribbon. |
 
-## Papers
-
-| Citation key | Work | Possible application |
-| --- | --- | --- |
-| seifert1935genus | Herbert Seifert, *Über das Geschlecht von Knoten* (1935) | Spanning surfaces and genus for certified topology. |
-| seifert1935cyclic | Seifert, *Die Verschlingungsinvarianten der zyklischen Knotenüberlagerungen* (1935/36) | Knot invariants and cyclic coverings. |
-| alexander1928 | J. W. Alexander, *Topological Invariants of Knots and Links* (1928) | Alexander polynomial for closed links. |
-| milnor1954 | John Milnor, *Link Groups* (1954) | Link homotopy and link groups. |
-| dennis2005 | M. R. Dennis and J. H. Hannay, *Geometry of Călugăreanu's theorem* (2005) | Linking = twist + writhe for appropriate **closed framed ribbons**. |
-| ghys2007 | Étienne Ghys, *Knots and Dynamics* (ICM, 2007) | Knotted periodic orbits, dynamics and linking. |
-
-## What could eventually appear on screen?
-
-| Future operation | Grounding | Preconditions | Live display now? |
-| --- | --- | --- | --- |
-| relativeEndpointTurns | Current scene's two unwrapped endpoint angles | Both block angles available | **Yes**, but display as *relative commanded turns*, not a topological invariant. |
-| ribbonTwist | dennis2005 | Regular centerline and continuous, transverse unit framing | Later: geometric measurement. |
-| writhe | dennis2005 | Regular centerline, validated quadrature and self-contact policy | Later: geometric measurement; not a knot invariant. |
-| linkingNumber | rolfsen2003, dennis2005 | **Disjoint closed oriented curves** | **No** for the current two open ribbons. |
-| surfaceGenusFromCertifiedCounts | seifert1935genus, rolfsen2003 | Certified connected orientable surface, Euler characteristic and boundary count | Not yet; does not prove *minimal knot genus*. |
-| alexanderPolynomial | alexander1928, rolfsen2003 | Closed knot/link algebra, e.g. verified Seifert matrix | Not yet. |
-| linkingResidueAnalogy | morishita2012, morishita2024 | Explicit number-theoretic inputs and a valid analogy | Not determined by a finger drag. |
-
-The current geometry has **three independently rotating blocks and two open ribbons**.
-The unwrapped angles preserve history: one full endpoint rotation can leave a
-visible ribbon twist even when the cube's orientation returns. This makes
-relative commanded turns useful. It does **not** certify closed curves, a
-Seifert surface, conserved linking numbers, or non-self-intersection.
-
-## Source and implementation policy
-
-- Check in metadata and links; do not commit copyrighted volumes or scans.
-- Publisher links may require paid or institutional access.
-- Each new Idriç definition should cite a key and state **input preconditions**.
-- If those preconditions are not yet met, a proposed invariant is *unavailable*,
-  not zero. Reserve the word *invariant* for quantities that actually are one. The genus of one constructed spanning surface need not equal the **knot genus**, which is the minimum over all such surfaces.
+A full endpoint revolution can change the visible ribbon while returning
+the cube's rendered orientation. The unwrapped angle history must remain
+available to future Idriç functions. A missing invariant must be reported
+as *unavailable*, never as a spurious zero.
