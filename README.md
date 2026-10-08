@@ -31,7 +31,7 @@ interior ribbon twist.
 ## Implementation
 
 The design follows
-[functorial-games/spinor](https://github.com/functorial-games/spinor):
+[isomorphismes/spinor](https://github.com/isomorphismes/spinor):
 
 - `types/Seifert.idric`: Idriç semantic/type sketch, not compiled;
 - `native/seifert.[ch]`: checked host-tested independent 3D rotations and
@@ -50,3 +50,16 @@ Jason Hise's belt-trick/antitwister visualizations inspire the visual
 experiment. No unreleased Hise source code is included.
 
 See `native/README.md` and `android/README.md`.
+
+## Mathematical reading list
+
+- [Books: arithmetic topology and supporting topology](books/README.md) —
+  Morishita's *Knots and Primes* (including its 2024 revision) and
+  Milnor's *Singular Points of Complex Hypersurfaces*.
+- [Papers: Alexander, Seifert, and Ghys](papers/README.md) —
+  original knot and covering invariants, Seifert surfaces, and
+  connections with dynamical systems.
+
+These are references for future Idriç mathematical definitions, not a
+claim that the current ribbon viewer computes those invariants. In particular,
+a geometric twist is not automatically a change of knot type.

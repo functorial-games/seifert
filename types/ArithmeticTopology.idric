@@ -1,6 +1,6 @@
-module Seifert.ArithmeticTopology
+module ArithmeticTopology
 
-import Seifert.Types
+import Seifert
 
 -- Semantic Idriç source: intentionally not represented as compiled Android code.
 -- This first slice *defines* pure arithmetic/readout operations over the
@@ -10,7 +10,7 @@ import Seifert.Types
 -- Current open ribbons do NOT admit a closed-link linking invariant.
 
 public export
-tau : Number
+tau : PrototypeScalar
 tau = 6.283185307179586476925286766559
 
 -- Oriented from corner block to outer block (upper / right).
@@ -18,39 +18,40 @@ public export
 data RibbonId = VerticalRibbon | HorizontalRibbon
 
 public export
-outerBlock : RibbonId -> BlockId
-outerBlock VerticalRibbon = UpperBlock
-outerBlock HorizontalRibbon = RightBlock
+outer_block : RibbonId → BlockId
+outer_block VerticalRibbon = UpperBlock
+outer_block HorizontalRibbon = RightBlock
 
 public export
-angleOf : BlockId -> ThreeBlockScene -> Number
-angleOf UpperBlock scene = unwrappedAngle (upper scene)
-angleOf CornerBlock scene = unwrappedAngle (corner scene)
-angleOf RightBlock scene = unwrappedAngle (right scene)
+angle_of : BlockId → ThreeBlockScene → PrototypeScalar
+angle_of UpperBlock scene = unwrapped_angle (upper scene)
+angle_of CornerBlock scene = unwrapped_angle (corner scene)
+angle_of RightBlock scene = unwrapped_angle (right scene)
 
 -- Signed revolutions commanded to the block about its common diagonal.
 -- This is the angle history, not its final SO(3) orientation.
 public export
-commandedBlockTurns : BlockId -> ThreeBlockScene -> Number
-commandedBlockTurns block scene = angleOf block scene / tau
+commanded_block_turns : BlockId → ThreeBlockScene → PrototypeScalar
+commanded_block_turns block scene = angle_of block scene / tau
 
 -- The relative rotation is a *diagnostic*: outer angle minus corner angle.
 -- The rotation axes are shared spatial diagonals, NOT ribbon tangents.
 -- Calling this quantity actual geometric ribbon twist would be incorrect.
 public export
-relativeEndpointRadians : RibbonId -> ThreeBlockScene -> Number
-relativeEndpointRadians ribbon scene =
-  angleOf (outerBlock ribbon) scene - angleOf CornerBlock scene
+relative_endpoint_radians : RibbonId → ThreeBlockScene → PrototypeScalar
+relative_endpoint_radians ribbon scene =
+  angle_of (outer_block ribbon) scene - angle_of CornerBlock scene
 
 public export
-relativeEndpointTurns : RibbonId -> ThreeBlockScene -> Number
-relativeEndpointTurns ribbon scene =
-  relativeEndpointRadians ribbon scene / tau
+relative_endpoint_turns : RibbonId → ThreeBlockScene → PrototypeScalar
+relative_endpoint_turns ribbon scene =
+  relative_endpoint_radians ribbon scene / tau
 
 -- Fail-closed number transport to a future UI. "Unavailable" is not zero.
 public export
 data Requirement
-  = ContinuousNormalFraming
+  = FiniteCommandedAngles
+  | ContinuousNormalFraming
   | RegularCenterline
   | DisjointClosedOrientedBoundaries
   | CertifiedOrientableSurface
@@ -69,19 +70,27 @@ data Quantity
 
 public export
 data NumberReadout
-  = Available String Number String
-  | Unavailable String (List Requirement)
+  = Available Text PrototypeScalar Text
+  | Unavailable Text (List Requirement)
+
+-- Reject NaN, infinity and arithmetic overflow before transporting a number.
+-- For a finite binary64 value, value - value is zero; for infinity it is NaN.
+available_if_finite : Text → PrototypeScalar → Text → NumberReadout
+available_if_finite label value unit =
+  if value ≟ value && (value - value) ≟ 0
+     then Available label value unit
+     else Unavailable label [FiniteCommandedAngles]
 
 public export
-readout : Quantity -> ThreeBlockScene -> NumberReadout
+readout : Quantity → ThreeBlockScene → NumberReadout
 readout (BlockTurns block) scene =
-  Available "block rotation" (commandedBlockTurns block scene) "turns"
+  available_if_finite "block rotation" (commanded_block_turns block scene) "turns"
 readout (EndpointTurns VerticalRibbon) scene =
-  Available "upper − corner relative rotation"
-            (relativeEndpointTurns VerticalRibbon scene) "turns"
+  available_if_finite "upper − corner relative rotation"
+            (relative_endpoint_turns VerticalRibbon scene) "turns"
 readout (EndpointTurns HorizontalRibbon) scene =
-  Available "right − corner relative rotation"
-            (relativeEndpointTurns HorizontalRibbon scene) "turns"
+  available_if_finite "right − corner relative rotation"
+            (relative_endpoint_turns HorizontalRibbon scene) "turns"
 readout (GeometricRibbonTwist _) _ =
   Unavailable "geometric ribbon twist"
               [RegularCenterline, ContinuousNormalFraming]
@@ -101,14 +110,14 @@ readout LegendreSymbol _ =
 -- components and Euler characteristic chi: 2*g = 2 - b - chi.
 -- This arithmetic check cannot certify that a mesh is such a surface.
 public export
-genusFromCertifiedCounts : (eulerCharacteristic : Integer) ->
-                           (boundaryComponents : Integer) ->
+genus_from_certified_counts : (euler_characteristic : Integer) →
+                           (boundary_components : Integer) →
                            Maybe Integer
-genusFromCertifiedCounts chi b =
-  let twiceGenus = 2 - b - chi in
-  if b < 1 || twiceGenus < 0 || mod twiceGenus 2 /= 0
+genus_from_certified_counts chi b =
+  let twice_genus = 2 - b - chi in
+  if b < 1 || twice_genus < 0 || not (mod twice_genus 2 ≟ 0)
      then Nothing
-     else Just (div twiceGenus 2)
+     else Just (div twice_genus 2)
 
 -- Signs of mixed crossings from a *correctly oriented diagram of two
 -- distinct closed link components*, counted once per mixed crossing.
@@ -117,29 +126,29 @@ public export
 data CrossingSign = PositiveCrossing | NegativeCrossing
 
 public export
-signedMixedCrossings : List CrossingSign -> Integer
-signedMixedCrossings [] = 0
-signedMixedCrossings (PositiveCrossing :: rest) =
-  1 + signedMixedCrossings rest
-signedMixedCrossings (NegativeCrossing :: rest) =
-  -1 + signedMixedCrossings rest
+signed_mixed_crossings : List CrossingSign → Integer
+signed_mixed_crossings [] = 0
+signed_mixed_crossings (PositiveCrossing :: rest) =
+  1 + signed_mixed_crossings rest
+signed_mixed_crossings (NegativeCrossing :: rest) =
+  -1 + signed_mixed_crossings rest
 
 -- The linking number is one-half the mixed-crossing sum. An odd sum
 -- signals invalid/incomplete input, not a half-integer linking invariant.
 public export
-linkingFromGivenMixedCrossings : List CrossingSign -> Maybe Integer
-linkingFromGivenMixedCrossings crossings =
-  let total = signedMixedCrossings crossings in
-  if mod total 2 /= 0 then Nothing else Just (div total 2)
+linking_from_given_mixed_crossings : List CrossingSign → Maybe Integer
+linking_from_given_mixed_crossings crossings =
+  let crossing_sum = signed_mixed_crossings crossings in
+  if not (mod crossing_sum 2 ≟ 0) then Nothing else Just (div crossing_sum 2)
 
 -- Călugăreanu–White–Fuller consistency *only* for a regular,
 -- embedded, closed, oriented, framed ribbon with valid numeric inputs:
 -- Lk = Tw + Wr. This does not determine Lk from an open screen ribbon.
 public export
-closedRibbonConsistencyResidual : (linking : Number) ->
-                                  (twist : Number) ->
-                                  (writhe : Number) -> Number
-closedRibbonConsistencyResidual linking twist writhe =
+closed_ribbon_consistency_residual : (linking : PrototypeScalar) →
+                                  (twist : PrototypeScalar) →
+                                  (writhe : PrototypeScalar) → PrototypeScalar
+closed_ribbon_consistency_residual linking twist writhe =
   linking - (twist + writhe)
 
 -- Future gates: a certified closed link/Seifert surface and validated
