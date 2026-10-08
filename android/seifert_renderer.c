@@ -22,14 +22,14 @@ typedef struct {
 } RenderVertex;
 
 static const char *VERTEX_SHADER =
-    "attribute vec3 a_position;\\n"
-    "attribute vec3 a_color;\\n"
-    "uniform mat4 u_matrix;\\n"
-    "varying vec3 v_color;\\n"
-    "void main() {\\n"
-    "  gl_Position = u_matrix * vec4(a_position, 1.0);\\n"
-    "  v_color = a_color;\\n"
-    "}\\n";
+    "attribute vec3 a_position;\n"
+    "attribute vec3 a_color;\n"
+    "uniform mat4 u_matrix;\n"
+    "varying vec3 v_color;\n"
+    "void main() {\n"
+    "  gl_Position = u_matrix * vec4(a_position, 1.0);\n"
+    "  v_color = a_color;\n"
+    "}\n";
 
 static const char *FRAGMENT_SHADER =
     "precision mediump float;\n"
