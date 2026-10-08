@@ -1,7 +1,9 @@
 # Arithmetic topology Idriç: first math/readout slice
 
 Module: [ArithmeticTopology.idric](ArithmeticTopology.idric)
-Bibliography: [books/README.md](../books/README.md) (PR #3 when it merges).
+Bibliography: [books/README.md](../books/README.md),
+[books/books.bib](../books/books.bib) and [papers/papers.bib](../papers/papers.bib).
+The bibliography was merged to main in PR #3.
 
 ## What is implemented now?
 
@@ -44,6 +46,20 @@ cube turns; it makes **both** values equal -1 if only the corner turns.
 | 2*tau | tau | -tau | +1 | -2 |
 
 These are expected fixtures, not compiler test results.
+
+Additional expected arithmetic fixtures:
+
+- genusFromCertifiedCounts(1, 1) = Just 0 (disk).
+- genusFromCertifiedCounts(0, 2) = Just 0 (annulus).
+- genusFromCertifiedCounts(-1, 1) = Just 1 (once-punctured torus).
+- genusFromCertifiedCounts(0, 1) = Nothing (nonintegral genus).
+- linkingFromGivenMixedCrossings([PositiveCrossing, PositiveCrossing]) = Just 1.
+- linkingFromGivenMixedCrossings([PositiveCrossing, NegativeCrossing]) = Just 0.
+- linkingFromGivenMixedCrossings([PositiveCrossing]) = Nothing.
+
+The crossing examples assume the inputs really are the mixed crossings of a
+validated oriented closed two-component link diagram, which this module
+cannot itself verify.
 
 ## Domain gates / mathematical conditions
 
