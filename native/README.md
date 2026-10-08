@@ -1,34 +1,52 @@
-# Host-tested ribbon geometry
+# Native three-block ribbon model
 
-`seifert.[ch]` is a small checked C ABI with no Android dependencies.
-It owns the three block centers, three independent signed/unwrapped angles,
-block rotation, and both ribbon meshes. No renderer/Android data types cross
-the boundary.
+The first executable model is deliberately small and Android-independent.
+`seifert.[ch]` owns 3 cube centers, 3 signed unwrapped angles, 2 ribbon
+meshes, and the geometry that attaches each ribbon to the rotating cube faces.
 
-The reference block centers are (1.15, 1.5), (3.5, 1.5), and (5.85, 1.5)
-in the positive x-y quadrant, with z=0. Blocks are 3D cubes whose
-centers stay on that 2D line. Their twist axes are parallel to the x-axis,
-the direction of each ribbon's centerline.
+## Positive two-dimensional orthant
 
-The two ribbon endpoints are fixed to the facing x-surfaces of their blocks.
-For a ribbon between adjacent blocks with unwrapped angles a and b,
-the cross-section at u between 0 and 1 is rotated through
+The cube centers lie in the positive (x, y) quadrant of the z=0 plane:
+upper (1.90, 4.40), corner (1.90, 1.90), right (4.40, 1.90).
+One strip runs north (+y) from the corner to the upper block; the other
+runs east (+x) from the corner to the right block.
 
-```text
-theta(u) = (1 - smoothstep(u)) * a + smoothstep(u) * b
+Each cube spins about a spatial diagonal through its own center,
+`(1, 1, 1)/sqrt(3)`. This single rotation axis per cube is intentionally
+usable at the corner despite its two **perpendicular ribbon faces**. The
+angles are separate state values, so turning the corner alters both
+ribbons while turning either outer cube affects only its own.
+
+## Exact attached edges
+
+A band root on block `i` has a local face normal `n`, transverse width
+direction `w`, half cube size `h`, band half width `b`, cube center
+`C_i`, and rotation `R_i`. Its actual two vertices are
+
+`C_i + R_i(h*n - b*w)` and `C_i + R_i(h*n + b*w)`.
+
+Thus both edge vertices lie on the current rigid face, not on a
+renderer-invented fixed center. The centerline between root centers is a
+cubic Hermite curve with the two rotated face normals as end tangents.
+The band transverse vector interpolates using the full unwrapped angles:
+
+```
+theta(u) = (1 - smoothstep(u)) * angle_start
+             + smoothstep(u) * angle_end
 smoothstep(u) = u*u*(3 - 2*u)
+width(u) = R(theta(u)) * width_direction
 ```
 
-The sampled band is a simple ruled surface. This *does not* implement a
-Spin(3) ambient contraction, isotopy, or Seifert-surface computation.
-In particular, 2π leaves a full twist in the connecting band. That is
-intentional in this initial multi-block experiment.
+This is a deterministic ruled band, **not** a collision-free ambient
+isotopy, a cloth simulation, or a checked Seifert spanning surface.
+Large relative turns can still cause folds or surface intersections.
 
-Buffers are caller-owned; capacity, finite angles, geometry constraints
-and a 16-bit index bound are checked before writing. The renderer only
-uploads the returned vertices and colors them.
+## Host acceptance
 
-Run `sh native/test-host.sh`. The tests cover the orthant layout,
-independent end effects, both ribbons responding to the middle block,
-untouched far endpoints, reversibility, 2π cube return with ribbon twist,
-and invalid input/capacity failures.
+Run `sh native/test-host.sh`. Tests check a non-collinear, perpendicular
+orthant, exact ribbon end-face attachment before and after unrelated
+cube turns, independent block effects, 2π cube return with interior twist,
+reversibility, buffer checks, picking at the same positions drawn by GLES,
+a 36%-larger hit radius on MIRO A1, and persistence of captured touch
+well beyond the original block. Android pointer details remain below the
+platform adapter, with a small platform-independent gesture state for tests.
