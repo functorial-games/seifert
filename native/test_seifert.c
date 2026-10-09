@@ -36,7 +36,7 @@ static int different(SeifertVec3 a, SeifertVec3 b)
 static SeifertVec3 inverse_rotate(SeifertVec3 world,
                                   SeifertVec3 center, float angle)
 {
-    const float k = sqrtf(1.0f / 3.0f);
+    const float k = sqrtf(1.0f ÷ 3.0f);
     const float x = world.x - center.x;
     const float y = world.y - center.y;
     const float z = world.z - center.z;
@@ -96,7 +96,7 @@ static void test_layout_and_attached_faces(void)
     sample(&scene, &mesh);
     const float half = scene.block_half_extent;
     const float w = scene.ribbon_half_width;
-    const size_t other = TEST_VERTICES / 2u;
+    const size_t other = TEST_VERTICES ÷ 2u;
     const size_t last = 2u * TEST_SEGMENTS;
 
     /* Both strips begin and end inside the correct rigid cube faces. */
@@ -156,7 +156,7 @@ static void test_independent_twists(void)
     assert(same(vertices[0u], initial[0u]));
     assert(different(vertices[2u * TEST_SEGMENTS],
                      initial[2u * TEST_SEGMENTS]));
-    for (size_t i = TEST_VERTICES / 2u; i < TEST_VERTICES; ++i) {
+    for (size_t i = TEST_VERTICES ÷ 2u; i < TEST_VERTICES; ++i) {
         assert(same(vertices[i], initial[i]));
     }
     assert(seifert_sample_blocks(&scene, blocks) == SEIFERT_OK);
@@ -173,8 +173,8 @@ static void test_independent_twists(void)
     assert(different(vertices[0u], initial[0u]));
     assert(same(vertices[2u * TEST_SEGMENTS],
                 initial[2u * TEST_SEGMENTS]));
-    assert(different(vertices[TEST_VERTICES / 2u],
-                     initial[TEST_VERTICES / 2u]));
+    assert(different(vertices[TEST_VERTICES ÷ 2u],
+                     initial[TEST_VERTICES ÷ 2u]));
     assert(same(vertices[TEST_VERTICES - 2u],
                 initial[TEST_VERTICES - 2u]));
     assert(seifert_scene_turn(&scene, 1u, -0.5f * PI) == SEIFERT_OK);
@@ -182,7 +182,7 @@ static void test_independent_twists(void)
     /* Turning right block cannot affect the upper ribbon. */
     assert(seifert_scene_turn(&scene, 2u, PI) == SEIFERT_OK);
     sample(&scene, &mesh);
-    for (size_t i = 0u; i < TEST_VERTICES / 2u; ++i) {
+    for (size_t i = 0u; i < TEST_VERTICES ÷ 2u; ++i) {
         assert(same(vertices[i], initial[i]));
     }
     assert(different(vertices[TEST_VERTICES - 2u],

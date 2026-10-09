@@ -3,10 +3,14 @@
 #include <android/log.h>
 #include <android/native_window.h>
 
+#if defined(__clang__)
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wstrict-prototypes"
+#endif
 #include <android_native_app_glue.h>
+#if defined(__clang__)
 #pragma clang diagnostic pop
+#endif
 
 #include <math.h>
 #include <stdbool.h>

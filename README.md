@@ -42,7 +42,7 @@ The design follows
 - `android/seifert_renderer.c`: OpenGL ES 2 renderer;
 - `android/build-*.sh`: canonical android-NDK signing and packaging route.
 
-`sh native/test-host.sh` verifies the orthant, all six attachment pairs,
+`ICK=/absolute/qualified/ick sh native/test-host.sh` verifies the orthant, all six attachment pairs,
 independent turning, 2π/undo, camera/picking consistency, and off-block
 drag persistence. CI builds signed MIRO A1 and C67 APK artifacts.
 
