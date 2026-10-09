@@ -43,7 +43,7 @@ Large relative turns can still cause folds or surface intersections.
 
 ## Host acceptance
 
-Run `sh native/test-host.sh`. Tests check a non-collinear, perpendicular
+Run `ICK=/absolute/qualified/ick sh native/test-host.sh`. Tests check a non-collinear, perpendicular
 orthant, exact ribbon end-face attachment before and after unrelated
 cube turns, independent block effects, 2π cube return with interior twist,
 reversibility, buffer checks, picking at the same positions drawn by GLES,

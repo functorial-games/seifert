@@ -36,7 +36,7 @@ ordinary surface re-creation.
 Run host acceptance:
 
 ```sh
-sh native/test-host.sh
+ICK=/absolute/qualified/ick sh native/test-host.sh
 ```
 
 For MIRO A1, compile and package against the same canonical NDK and test
@@ -44,6 +44,7 @@ signer as the previous working A1 APK, with a bumped versionCode 2 so it
 installs over version 1 without erasing saved app data:
 
 ```sh
+ICK_CC=/absolute/qualified/arm-linux-gnueabi-gcc \
 ANDROID_ABI=armeabi-v7a ANDROID_NDK_HOME=/absolute/android-ndk-r27c \
   bash android/build-native.sh
 ```
