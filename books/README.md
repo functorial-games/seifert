@@ -97,3 +97,7 @@ A full endpoint revolution can change the visible ribbon while returning
 the cube's rendered orientation. The unwrapped angle history must remain
 available to future Idriç functions. A missing invariant must be reported
 as *unavailable*, never as a spurious zero.
+
+## Cross-reference: Seifert-fibered manifolds
+
+The *Seifert surface* of a knot (the subject of the interactive ribbons) should not be confused with a *Seifert-fibered 3-manifold*. For the latter, see **Peter Scott**, [“The Geometries of 3-Manifolds” (1983)](https://doi.org/10.1112/blms/15.5.401), §§3–5: the theory of Seifert fiber spaces and their place among Thurston's eight geometries. This is a **survey paper**, catalogued in [papers](../papers/README.md), not an extra book.
