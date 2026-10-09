@@ -28,3 +28,7 @@ byte-for-byte frozen. Its equivalence runner compiles that reference and the
 maintained ICK source separately; both are linked into the retained semantic
 comparison. The old Python compatibility adapter is retained historical debt
 but is no longer a producer of the host or Android application.
+
+The retained comparison passes all 343 three-block states with the direct
+ICK frontend. Both ARMv7 and AArch64 full application libraries also pass
+the same API21/r27c source, assembly and final-link checks for this branch.
