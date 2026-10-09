@@ -16,7 +16,7 @@ binary64 oracle `PrototypeScalar`; it does not widen a Float32 application
 value or claim a Float16/Float32 backend. The native renderer's C float boundary
 and target lowering remain separate and unqualified by this prototype.
 
-Current compiler source: isomorphisms/Idric `Idriç` at
+Initial 8 October 2026 compiler source: isomorphisms/Idric `Idriç` at
 `ff4d852862a3942592f8ade9afde8d409d9803be`. Source operations are kept in
 `types/`; this directory holds acceptance calls, expected results, and failures.
 Original attempts remain recoverable at the branch parent; no failed result is
@@ -43,3 +43,19 @@ Version output: `Idris 2, version 0.8.0-ff4d85286` (the current Idriç executabl
 retains the inherited product banner). The source checkout remained clean.
 The checked-in Grease runner requires an explicit `IDRIC_COMPILER`; the host
 Chez prefix/runtime must be provided. It does not install or select a fallback.
+
+## Division glyph acceptance
+
+The account-wide notation migration changes seven mathematical `/` tokens to
+`÷` in the readout definitions and acceptance calls, including the compact
+`tau÷4` form and the intentional `1÷0` and `0÷0` nonfinite fixtures.
+Paths, comments and inherited inequality operators remain distinct.
+
+The migrated modules typecheck and all 17 host check groups execute with
+isomorphisms/Idric compiler source
+`94dfd99bd3e376507fedc8611053b7173b2519f0`, whose maintained frontend maps `÷`
+to the same checked division operation. The resulting compiler reports
+`Idris 2, version 0.8.0-94dfd99bd`; its compiled Chez payload SHA-256 is
+`4864ed84e76332e6bc295d158524fa113e8b6e078aa6b9f586bdd9e7e06210ab`.
+This is host semantic evidence; Android lowering and physical acceptance keep
+their existing separate requirements.

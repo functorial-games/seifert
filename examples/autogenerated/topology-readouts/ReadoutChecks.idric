@@ -33,7 +33,7 @@ checks : List (Text, Bool)
 checks =
   [ ("six signed endpoint fixtures", all endpoint_fixture
       [(0,0,0,0,0), (tau,0,0,1,0), (0,tau,0,-1,-1),
-       (0,0,tau,0,1), (tau/4,-tau/4,3*tau/4,0.5,1),
+       (0,0,tau,0,1), (tau÷4,-tau÷4,3*tau÷4,0.5,1),
        (2*tau,tau,-tau,1,-2)])
   , ("two turns remain two turns", near
       (commanded_block_turns UpperBlock (scene_with_angles (2*tau) 0 0)) 2)
@@ -57,9 +57,9 @@ checks =
       [GeometricRibbonTwist VerticalRibbon, CenterlineWrithe HorizontalRibbon,
        ClosedLinkLinking, SurfaceGenus, LegendreSymbol])
   , ("infinity rejected", is_unavailable (readout (BlockTurns UpperBlock)
-      (scene_with_angles (1/0) 0 0)))
+      (scene_with_angles (1÷0) 0 0)))
   , ("NaN rejected", is_unavailable (readout (EndpointTurns VerticalRibbon)
-      (scene_with_angles (0/0) 0 0)))
+      (scene_with_angles (0÷0) 0 0)))
   , ("endpoint overflow rejected", is_unavailable
       (readout (EndpointTurns VerticalRibbon)
         (scene_with_angles 1.0e308 (-1.0e308) 0)))

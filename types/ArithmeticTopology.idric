@@ -32,7 +32,7 @@ angle_of RightBlock scene = unwrapped_angle (right scene)
 -- This is the angle history, not its final SO(3) orientation.
 public export
 commanded_block_turns : BlockId → ThreeBlockScene → PrototypeScalar
-commanded_block_turns block scene = angle_of block scene / tau
+commanded_block_turns block scene = angle_of block scene ÷ tau
 
 -- The relative rotation is a *diagnostic*: outer angle minus corner angle.
 -- The rotation axes are shared spatial diagonals, NOT ribbon tangents.
@@ -45,7 +45,7 @@ relative_endpoint_radians ribbon scene =
 public export
 relative_endpoint_turns : RibbonId → ThreeBlockScene → PrototypeScalar
 relative_endpoint_turns ribbon scene =
-  relative_endpoint_radians ribbon scene / tau
+  relative_endpoint_radians ribbon scene ÷ tau
 
 -- Fail-closed number transport to a future UI. "Unavailable" is not zero.
 public export
