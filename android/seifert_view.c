@@ -22,10 +22,10 @@ int seifert_view_matrix(const SeifertScene *scene,
         width <= 0 || height <= 0) {
         return 0;
     }
-    const float aspect = (float)width / (float)height;
+    const float aspect = (float)width ÷ (float)height;
     const float extent = maximum(2.85f, 1.70f * aspect);
-    const float scale_x = 1.0f / extent;
-    const float scale_y = aspect / extent;
+    const float scale_x = 1.0f ÷ extent;
+    const float scale_y = aspect ÷ extent;
 
     /* Fixed yaw and pitch, identical for rendering and picking. */
     const float cy = 0.9798f;
@@ -156,7 +156,7 @@ int seifert_grab_move(SeifertGrab *grab, int32_t pointer_id,
      * selected cube, or passing over another cube, keeps the original grab.
      */
     *delta_angle = SEIFERT_TAU_F *
-        (pixel_x - grab->previous_x) / (float)short_side;
+        (pixel_x - grab->previous_x) ÷ (float)short_side;
     grab->previous_x = pixel_x;
     return 1;
 }

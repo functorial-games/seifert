@@ -8,15 +8,24 @@ abi=${ANDROID_ABI:-armeabi-v7a}
 api=${ANDROID_API:-21}
 
 case "$abi" in
-    armeabi-v7a) target=armv7a-linux-androideabi ;;
-    arm64-v8a) target=aarch64-linux-android ;;
-    x86) target=i686-linux-android ;;
-    x86_64) target=x86_64-linux-android ;;
+    armeabi-v7a) target=armv7a-linux-androideabi; ick_target=arm-linux-gnueabi; header_target=arm-linux-androideabi; ick_flags=(-marm -march=armv7-a -mfpu=vfpv3-d16 -mfloat-abi=softfp) ;;
+    arm64-v8a) target=aarch64-linux-android; ick_target=aarch64-linux-gnu; header_target=aarch64-linux-android; ick_flags=(-ffixed-x18) ;;
+    x86) target=i686-linux-android; ick_target=i686-linux-gnu; header_target=i686-linux-android; ick_flags=(-march=i686 -mssse3 -mfpmath=sse -mstackrealign) ;;
+    x86_64) target=x86_64-linux-android; ick_target=x86_64-linux-gnu; header_target=x86_64-linux-android; ick_flags=(-march=x86-64-v2 -mno-avx -mno-movbe) ;;
     *)
         printf 'unsupported Android ABI: %s\n' "$abi" >&2
         exit 2
         ;;
 esac
+
+ick=${ICK_CC:-${ICK_ROOT:+$ICK_ROOT/bin/${ick_target}-gcc}}
+[[ -n $ick && -x $ick ]] || {
+    printf 'Set ICK_CC or ICK_ROOT for %s.\n' "$ick_target" >&2
+    exit 2
+}
+[[ $("$ick" -dumpmachine) == "$ick_target" ]] || exit 2
+builtin_include=$("$ick" -print-file-name=include)
+[[ -f $builtin_include/stddef.h ]] || exit 2
 
 ndk=${ANDROID_NDK_HOME:-${ANDROID_NDK_ROOT:-}}
 if [[ -z $ndk ]]; then
@@ -80,29 +89,24 @@ strict_compile=(
     -Wpedantic
 )
 
-# The first-party mathematical source is ICKY C, not an ordinary C file.
-# This leaf still uses the explicitly labeled NDK-compatibility lane until
-# Seifert's complete ICK ARM32/ARM64 application build is qualified.
-# The adapter only translates ← assignment to = outside comments/literals.
-command -v python3 >/dev/null || {
-    echo 'Python 3 required for explicit ICKY C compatibility adapter' >&2
-    exit 2
-}
-python3 "$root/tools/normalize_icky_c.py" \
-    "$root/icky/seifert.c" "$work/seifert.c"
-
 sources=(
     "$root/android/seifert_android.c"
     "$root/android/seifert_renderer.c"
     "$root/android/seifert_view.c"
-    "$work/seifert.c"
+    "$root/icky/seifert.c"
 )
 
 objects=()
+sysroot="$toolchain/sysroot"
 for source in "${sources[@]}"; do
     base=$(basename -- "$source" .c)
     object="$work/$base.o"
-    "$clang" "${strict_compile[@]}" -c "$source" -o "$object"
+    "$ick" "${ick_flags[@]}" "${strict_compile[@]}" \
+        --sysroot="$sysroot" -nostdinc -isystem "$builtin_include" \
+        -isystem "$sysroot/usr/include" -isystem "$sysroot/usr/include/$header_target" \
+        -D__ANDROID__ -D__ANDROID_API__="$api" -D__ANDROID_MIN_SDK_VERSION__="$api" \
+        -DBIONIC_IOCTL_NO_SIGNEDNESS_OVERLOAD -S "$source" -o "$work/$base.s"
+    "$clang" "${ick_flags[@]}" -fPIC -c "$work/$base.s" -o "$object"
     objects+=("$object")
 done
 
@@ -135,3 +139,4 @@ printf 'SEIFERT_NATIVE\tPASS\n'
 printf 'ABI\t%s\n' "$abi"
 printf 'API\t%s\n' "$api"
 printf 'LIBRARY\t%s\n' "$output"
+printf 'C_FRONTEND\t%s\n' "$ick"

@@ -7,19 +7,26 @@ on:
       - "android/**"
       - "native/**"
       - "icky/**"
-      - "tools/**"
+      - "ci/**"
+      - ".github/actions/ick-host/**"
+      - "docs/division-migration.md"
       - ".github/workflows/apk-artifacts.yml"
   pull_request:
     branches: [main, feat/three-block-ribbons]
     paths:
       - "android/**"
       - "native/**"
+      - "icky/**"
+      - "ci/**"
+      - ".github/actions/ick-host/**"
+      - "docs/division-migration.md"
       - ".github/workflows/apk-artifacts.yml"
   workflow_dispatch:
 
 jobs:
   apk:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
     strategy:
       fail-fast: false
       matrix:
@@ -31,18 +38,25 @@ jobs:
 
     steps:
       - name: Checkout Seifert
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - id: host
+        uses: ./.github/actions/ick-host
 
       - name: Checkout canonical Android NDK substrate
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           repository: isomorphisms/android-NDK
+          ref: 42f04d7654d54309ec3f8787bfd2bc40730399d7
           path: deps/android-NDK
 
       - name: Checkout public development signer
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           repository: isomorphismes/wegert
+          ref: dfa3751f0282cdf6a2083c97063b0e8e996d0d92
           path: deps/wegert
 
       - name: Install Android inputs
@@ -56,12 +70,19 @@ jobs:
             "platforms;android-34" \
             "build-tools;35.0.0"
 
+      - id: compiler
+        uses: isomorphisms/ai-ci/ick-android@015cc7901ae0b3ad262b476f24e129b53c56db95
+        with:
+          abi: ${{ matrix.abi }}
+          ndk: ${{ env.ANDROID_HOME }}/ndk/27.2.12479018
+
       - name: Verify public development signer
         run: |
           bash deps/wegert/_/build/android-signing/verify-test-signing.sh
 
       - name: Build signed APK
         env:
+          ICK_CC: ${{ steps.compiler.outputs.compiler }}
           ANDROID_ABI: ${{ matrix.abi }}
           ANDROID_API: "21"
           ANDROID_NDK_CHECKOUT: ${{ github.workspace }}/deps/android-NDK
@@ -85,7 +106,7 @@ jobs:
           sha256sum "$output" > "$output.sha256"
 
       - name: Upload signed APK
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: seifert-${{ matrix.device }}-${{ matrix.abi }}
           if-no-files-found: error

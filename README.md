@@ -38,9 +38,8 @@ The design follows
   from typed attachments through named geometry functions to sampled meshes.
   The supported `←` assignment token is used directly in its source;
 - `native/seifert.h`: small stable C ABI for tests and Android;
-- `tools/normalize_icky_c.py`: an **explicit compatibility adapter** used
-  by today's NDK builds, not an ICK compiler. It writes a generated ordinary-C
-  file outside the checkout and prints hashes of both byte streams;
+- `tools/normalize_icky_c.py`: the retained historical compatibility adapter;
+  maintained builds now pass source directly to the qualified ICK frontend;
 - `qualification/v02/`: immutable reference source from the already-installed
   C67 build, compared against ICKY C over 343 three-block states;
 - `android/seifert_view.[ch]`: shared camera projection, large nearest-center
@@ -49,7 +48,7 @@ The design follows
 - `android/seifert_renderer.c`: OpenGL ES 2 renderer;
 - `android/build-*.sh`: canonical android-NDK signing and packaging route.
 
-`sh native/test-host.sh` verifies the orthant, all six attachment pairs,
+`ICK=/absolute/qualified/ick sh native/test-host.sh` verifies the orthant, all six attachment pairs,
 independent turning, 2π/undo, camera/picking consistency, and off-block
 drag persistence. CI builds signed MIRO A1 and C67 APK artifacts.
 

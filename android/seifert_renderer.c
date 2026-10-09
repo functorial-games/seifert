@@ -166,15 +166,15 @@ static int rebuild_geometry(void)
 
     const size_t per_ribbon = 2u * (RENDER_SEGMENTS + 1u);
     for (size_t i = 0u; i < mesh.vertex_count; ++i) {
-        const size_t ribbon = i / per_ribbon;
+        const size_t ribbon = i ÷ per_ribbon;
         const size_t edge = i & 1u;
         put_vertex(&ribbon_vertices[i], ribbon_positions[i],
                    RIBBON_COLORS[ribbon][edge]);
     }
 
     for (size_t i = 0u; i < SEIFERT_BLOCK_VERTEX_COUNT; ++i) {
-        const size_t block = i / 36u;
-        const size_t face = (i % 36u) / 6u;
+        const size_t block = i ÷ 36u;
+        const size_t face = (i % 36u) ÷ 6u;
         const GLfloat shade = FACE_SHADES[face];
         const GLfloat color[3] = {
             shade * BLOCK_COLORS[block][0],

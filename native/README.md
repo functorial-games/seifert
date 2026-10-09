@@ -12,12 +12,10 @@ sample_ribbon_cross_section → sample_one_ribbon → seifert_sample_ribbons`.
 The mathematical edges of the two cubes, not the GLES renderer, determine
 the ribbon topology and geometry.
 
-For current host and Android NDK qualification,
-`../tools/normalize_icky_c.py` translates only qualified `←` assignments
-from the ICKY source, rejecting ordinary `=` assignment, unsupported
-executable glyphs, and malformed literals. The generated file is disposable
-build output; this is explicitly **not** a claim that Android already uses
-an ICK-built compiler.
+Host and Android builds compile the maintained source directly with ICK
+c61e4482. NDK r27c assembles and links Android output. The historical Python
+adapter is no longer a build producer. Exact pins and qualification are in
+[division-migration.md](../docs/division-migration.md).
 
 ## Positive two-dimensional orthant
 
@@ -58,7 +56,7 @@ Large relative turns can still cause folds or surface intersections.
 
 ## Host acceptance
 
-Run `sh native/test-host.sh`. Tests check a non-collinear, perpendicular
+Run `ICK=/absolute/qualified/ick sh native/test-host.sh`. Tests check a non-collinear, perpendicular
 orthant, exact ribbon end-face attachment before and after unrelated
 cube turns, independent block effects, 2π cube return with interior twist,
 reversibility, buffer checks, picking at the same positions drawn by GLES,

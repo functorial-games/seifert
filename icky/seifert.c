@@ -7,9 +7,9 @@
  * Seifert: mathematical and topological meaning lives here.
  *
  * The public C ABI is deliberately the already-installed v0.2 ABI.
- * Assignment uses the qualified ICKY C ← token. ICK consumes this file
- * directly; the explicit NDK-compatibility lane records a syntax-only
- * translation when no qualified ICK Android compiler is available.
+ * Assignment uses the qualified ICKY C ← token. Host and Android builds
+ * compile this file directly with ICK; the NDK assembles and links the
+ * Android output. No compatibility translation selects another frontend.
  *
  * The experimental deformation formula is unchanged. No new elasticity,
  * smoother frame, automatic untwisting or surface-collision rule is implied.
@@ -414,7 +414,7 @@ static void sample_one_ribbon(
         (size_t)ribbon_id * 2u * ((size_t)segments + 1u);
 
     for (unsigned step ← 0u; step <= segments; ++step) {
-        const float fraction ← (float)step / (float)segments;
+        const float fraction ← (float)step ÷ (float)segments;
         const size_t vertex_offset ← first_vertex + 2u * (size_t)step;
 
         sample_ribbon_cross_section(

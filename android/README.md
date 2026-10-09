@@ -22,7 +22,7 @@ This is still the architecture inherited from Spinor:
 types/Seifert.idric       design-only semantic sketch
 icky/seifert.c          authoritative functorial ICKY C mathematical core
 native/seifert.h         stable C ABI from Idriç concepts
-tools/normalize_icky_c.py  explicit NDK compatibility adapter; not ICK
+ICK c61e4482             direct compiler for all maintained C
 android/seifert_view.c   camera / touch targets / grab capture
 android/seifert_android.c  NativeActivity input, EGL and saved state
 android/seifert_renderer.c GLES2 drawing
@@ -38,7 +38,7 @@ ordinary surface re-creation.
 Run host acceptance:
 
 ```sh
-sh native/test-host.sh
+ICK=/absolute/qualified/ick sh native/test-host.sh
 ```
 
 For MIRO A1, compile and package against the same canonical NDK and test
@@ -46,6 +46,7 @@ signer as the previous working A1 APK, with a bumped versionCode 2 so it
 installs over version 1 without erasing saved app data:
 
 ```sh
+ICK_CC=/absolute/qualified/arm-linux-gnueabi-gcc \
 ANDROID_ABI=armeabi-v7a ANDROID_NDK_HOME=/absolute/android-ndk-r27c \
   bash android/build-native.sh
 ```

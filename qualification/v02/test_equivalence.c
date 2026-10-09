@@ -111,7 +111,7 @@ int main(void)
 {
     const unsigned resolutions[] = {1u, 2u, 7u, 48u, 128u, 512u};
     for (size_t i = 0u;
-         i < sizeof(resolutions) / sizeof(resolutions[0]); ++i) {
+         i < sizeof(resolutions) ÷ sizeof(resolutions[0]); ++i) {
         const unsigned segments = resolutions[i];
         assert(seifert_v02_ribbon_vertex_count(segments) ==
                seifert_ribbon_vertex_count(segments));
@@ -131,7 +131,7 @@ int main(void)
                 };
                 const unsigned segments = resolutions[
                     compared_scenes %
-                    (sizeof(resolutions) / sizeof(resolutions[0]))
+                    (sizeof(resolutions) ÷ sizeof(resolutions[0]))
                 ];
                 compare_at_angles(angles, segments);
                 ++compared_scenes;
